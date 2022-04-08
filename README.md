@@ -99,21 +99,80 @@ If you click on the Desktop icon, you should see the base desktop.
 ![](./illustrations/base_desktop.png)
 
 
+## Some words about the Desktop
+
+Note that by default, the user in the desktop is `jovyan`. This is the default for the jupyter base images.
+You can create files in `jovyan`'s home directory and work with the Deskop, **but be aware that the container
+environment is ephemeral, i.e. none of the files or other changes you make within the Deskop will persist
+when the Container is closed**.
+
+## Add a python environment with `napari`
+
+The bare-bone desktop can already be used to run python commands. But what we really want is to deploy software for users,
+in this case: `napari`.
+
+### Modifying the base image or building on top?
+
+We could just take the existing Dockerfile and add additional lines of code that will install napari into the pyhton environment.
+However, a better approach is to create a new Dockerfile that builds on our existing base image `01-jupyter-desktop` which we
+created in the previous step. This avoids rebuilding the base image and also allows for swapping out the base image. In other words it is a
+more modular approach.
+
+Have a look at [02a-napari-desktop/Dockerfile](./02a-napari-desktop/Dockerfile). In the first line, we tell docker to use the image we built
+in the previous step as the base image:
+
+```
+FROM 01-jupyter-desktop:latest
+```
+
+We then change permissions to `root`. The following command creates a new conda enviornment called napari
+
+```
+RUN source /opt/conda/etc/profile.d/conda.sh \
+  && conda create --yes --name napari python=3.9 \
+  &&  conda run --name napari python -m pip install napari[all] 
+```
+
+### Customizations
+
+To make the desktop our own, we add some customizations.
+Here, we replace the desktop logo:
+```
+COPY ./background.png /usr/share/backgrounds/xfce/xfce-stripes.png
+RUN chmod a+r /usr/share/backgrounds/xfce/xfce-stripes.png
+```
+and here we add a menu shortcut:
+```
+COPY ./Napari.desktop /usr/share/applications/Napari.desktop
+```
+
+### Build and run
+
+Now, `cd` into `02a-napari-desktop` and build the image:
+
+```sh
+Jupyter-Napari-Desktop/02a-napari-desktop$ docker build -t 02a-napari-desktop .
+```
+
+Upon succesful completion, you should be able to run:
+
+```sh 
+docker run -p 8888:8888 02a-napari-desktop:latest
+```
+
+And when starting the desktop you should see this:
+
+![./illustrations](./illustrations/napari-desktop.webm.mov)
 
 
-## Modifying the base image or building on top?
-
-## Add a python environment with napari
-
-## Customizations
 
 
 # Add GPU support
 
-# Build images in CI
-
 # Mount Volumes
 
+
+# Build images in CI
 
 # Deploy on a server for multiple users
 
