@@ -162,7 +162,7 @@ docker run -p 8888:8888 02a-napari-desktop:latest
 
 And when starting the desktop you should see this:
 
-![./illustrations](./illustrations/napari-desktop.webm.mov)
+[![](./illustrations/napari-desktop.webm.mov)]
 
 
 
