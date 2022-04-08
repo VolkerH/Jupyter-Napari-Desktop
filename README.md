@@ -1,5 +1,3 @@
-# WORK IN PROGRESS (should really be in a branch and not in main)
-
 # Setting up a remote desktop to use Napari in a browser
 
 * Do you want to run a course/workshop on napari or other GUI based-tools and worry how all participants can have a working python environment?
@@ -207,6 +205,17 @@ However, if you don't have nvidia docker and the drivers set up correctly, you w
 As an example we modify the napari desktop slightly to also add cellpose and the cellpose GPU plugin. Cellpose training greatly benefits from 
 having a powerful GPU. As many users don't have powerful GPUs on their laptops, enabling remote desktop access to a powerful GPU workstation
 is one of the use cases for setting up a custom Jupyter Desktop.
+
+You can find the respective changes in [02b-napari-cellpose-gpu/Dockerfile](02b-napari-cellpose-gpu/Dockerfile). 
+To build and run
+
+```
+cd 02b-napari-cellpose-gpu
+docker build -t 02b-napari-cellpose-gpu
+docker run --rm -p 8888:8888 --gpus=all 02b-napari-cellpose-gpu
+```
+
+You should now have napari with a working cellpose plugin and GPU support on your Desktop.
 
 # Mount Volumes
 
