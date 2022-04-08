@@ -7,7 +7,7 @@ Setting up a remote desktop environment that can be accessed via a web browser m
 This repo contains some basic documentation on how to set up such a remote desktop environment with Docker containers. It is based on 
 [jupyter-desktop-server by yuvipanda](https://github.com/yuvipanda/jupyter-desktop-server). A similar approach has been used with binder in NEUBIAS training for napari based on an idea by [guiwitz](https://github.com/guiwitz/).
 
-# tl;dr 
+# tl\;dr 
 
 TODO: pull a docker image from the hub and run it
 Show animated gif
@@ -20,12 +20,83 @@ If you never heard about Docker and containers, it is probably a good idea to re
 As a minimum requirement you need to install docker on your system. The basic instructions should work on Linux, Windows and Mac but the author has only tested them on Linux. In particular, shell scripts might differ a bit on windows depending on whether you use `cmd.exe`, Powershell or `bash` from WSL2. 
 If you plan on providing CUDA-based GPU acceleration for machine learning libraries (`tensorflow`, `pytorch`) or array libraries (`cupy`) make sure you install the NVIDIA-Docker runtime (NVIDIA docker is limited to Linux and not supported on Mac. It may work on windows using WSL2).
 
-## Base image
+## Build the base image
 
 As a first step, we just build a docker image to run a bare-bones jupyter desktop. All the necessary files are in [`01-jupyter-desktop`](./01-jupyter-desktop). This have basically just been vendored (fancy name for copied into this repo) from the official [Jupyter Remote Desktop Proxy](https://github.com/jupyterhub/jupyter-remote-desktop-proxy) with minor modifications. 
 In particular, we make the following modifications:
 * In the first line of the [Dockerfile](./01-jupyter-desktop/Dockerfile) we choose a more recent docker base image from the jupyter project after `FROM:`. For a list of the base image tags see here (https://hub.docker.com/r/jupyter/base-notebook/tags). To learn more about what's in the base images refer to the Jupyter docker stacks documentation [here](https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html).
-* We install a few additional ubuntu packages, that we will need for subsequent build steps that will be based on our base dektop docker image. In particular we add  `libqt5x11extras5-dev` which will later be needed for napari and  `build-essential` which is needed for e.g. scikit-image. Other additions are mainly for convenience when working with the desktop `nano`, `vim`, `mousepad` provide a selection of editors and `git` is always handy. 
+* We install a number of additional ubuntu packages, that we will need for subsequent build steps that will be based on our base dektop docker image. In particular we add  `libqt5x11extras5-dev` which will later be needed for napari and  `build-essential` which is needed for e.g. scikit-image. Other additions are mainly for convenience when working with the desktop `nano`, `vim`, `mousepad` provide a selection of editors and `git` is always handy. 
+
+If you clone this repository and `cd` into the `01-jupyter-desktop` you can now build the base image as follows 
+```sh
+~/Jupyter-Napari-Desktop/01-jupyter-desktop$ docker build -t 01-jupyter-desktop .
+```
+We tell docker to tag the image as `01-jupyter-desktop`. This is the name we will refer to in the second build step, when we add napari.
+
+This will take a while and download several 100 MBytes so it is good to do this with a good internet connection. Sometimes, this will break because some package servers are offline or time out, in that case just try again..
+
+You will first see how this pulls the base image layers. Ob subsequent runs this will be faster as the layers are cached.
+
+```sh
+Sending build context to Docker daemon   32.2MB
+Step 1/10 : FROM jupyter/base-notebook:python-3.9.10
+python-3.9.10: Pulling from jupyter/base-notebook
+e0b25ef51634: Downloading [=======================>                           ]  13.23MB/28.57MB
+a9d22f8daec9: Downloading [================>                                  ]  11.52MB/34.84MB
+0024e5e05bc9: Download complete 
+4f4fb700ef54: Download complete 
+33a6bebb46b2: Download complete 
+76608c7ca4ff: Download complete 
+51d29749a235: Download complete 
+f953c74f23c7: Downloading [====>                                              ]  8.571MB/89.48MB
+9e979eadccf1: Waiting 
+c0a46d57a185: Waiting 
+5ce1bbf82dba: Waiting 
+2c62e20c0d49: Waiting 
+```
+
+This will be followed by output regarding the download of ubuntu packages and installing a python environment.
+Eventually you should see something like:
+
+```
+Successfully built 4159451e1e74
+Successfully tagged 01-jupyter-desktop:latest
+```
+where the exact hash number of the image will be different.
+
+
+## Start the base image
+
+If the previous step worked, you can now run the base image
+
+```
+docker run -p 8888:8888 01-jupyter-desktop:latest 
+```
+
+Here, we map the network port `8888` from within the image to the same port number of the host. 
+If you already have something else (e.g. a jupyter notebook) running on port `8888` of the host you will have to map
+it to a free port number instead.
+
+You will see some console output, that should include a link towards the end:
+
+```
+[...]
+
+    To access the server, open this file in a browser:
+        file:///home/jovyan/.local/share/jupyter/runtime/jpserver-8-open.html
+    Or copy and paste one of these URLs:
+        http://347a800ec507:8888/lab?token=eb1a238cef1e1bcc579c508cacc53720ba3fd1775b0844b2
+     or http://127.0.0.1:8888/lab?token=eb1a238cef1e1bcc579c508cacc53720ba3fd1775b0844b2
+
+```
+If you open the link pointing to  `127.0.0.1` you should be greeted with a jupyterlab environment:
+
+![](./illustrations/jupyterlab_start.png)
+
+If you click on the Desktop icon, you should see the base desktop.
+![](./illustrations/base_desktop)
+
+
 
 
 ## Modifying the base image or building on top?
