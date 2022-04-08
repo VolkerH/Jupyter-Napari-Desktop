@@ -1,3 +1,5 @@
+# WORK IN PROGRESS (should really be in a branch and not in main)
+
 # Setting up a remote desktop to use Napari in a browser
 
 * Do you want to run a course/workshop on napari or other GUI based-tools and worry how all participants can have a working python environment?
@@ -94,7 +96,7 @@ If you open the link pointing to  `127.0.0.1` you should be greeted with a jupyt
 ![](./illustrations/jupyterlab_start.png)
 
 If you click on the Desktop icon, you should see the base desktop.
-![](./illustrations/base_desktop)
+![](./illustrations/base_desktop.png)
 
 
 
