@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Napari
+Comment=Multi-dimensional image viewer for python
+Exec=conda run -n napari napari
+Icon=/opt/conda/envs/napari/lib/python3.8/site-packages/napari/resources/logo.png
+Terminal=false
+Type=Application
+Categories=Science;Biology;ImageProcessing;
