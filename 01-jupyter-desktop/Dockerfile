@@ -1,5 +1,4 @@
-FROM jupyter/base-notebook:python-3.7.6
-
+FROM jupyter/base-notebook:python-3.9.10
 
 USER root
 
@@ -11,8 +10,15 @@ RUN apt-get -y update \
    xfce4-session \
    xfce4-settings \
    xorg \
-   xubuntu-icon-theme
-
+   xubuntu-icon-theme \
+   git \
+   libqt5x11extras5-dev \
+   quota \
+   nano \
+   vim \
+   build-essential \
+   mousepad
+  
 # Remove light-locker to prevent screen lock
 ARG TURBOVNC_VERSION=2.2.6
 RUN wget -q "https://sourceforge.net/projects/turbovnc/files/${TURBOVNC_VERSION}/turbovnc_${TURBOVNC_VERSION}_amd64.deb/download" -O turbovnc_${TURBOVNC_VERSION}_amd64.deb && \

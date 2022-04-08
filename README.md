@@ -22,7 +22,10 @@ If you plan on providing CUDA-based GPU acceleration for machine learning librar
 
 ## Base image
 
-As a first step, we just build a docker image to run a bare-bones jupyter desktop. All the necessary files are in [`01-jupyter-desktop`](./01-jupyter-desktop). This have basically just been vendored (fancy name for copied into this repo) from the official [Jupyter project](https://github.com/jupyterhub/jupyter-remote-desktop-proxy).
+As a first step, we just build a docker image to run a bare-bones jupyter desktop. All the necessary files are in [`01-jupyter-desktop`](./01-jupyter-desktop). This have basically just been vendored (fancy name for copied into this repo) from the official [Jupyter Remote Desktop Proxy](https://github.com/jupyterhub/jupyter-remote-desktop-proxy) with minor modifications. 
+In particular, we make the following modifications:
+* In the first line of the [Dockerfile](./01-jupyter-desktop/Dockerfile) we choose a more recent docker base image from the jupyter project after `FROM:`. For a list of the base image tags see here (https://hub.docker.com/r/jupyter/base-notebook/tags). To learn more about what's in the base images refer to the Jupyter docker stacks documentation [here](https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html).
+* We install a few additional ubuntu packages, that we will need for subsequent build steps that will be based on our base dektop docker image. In particular we add  `libqt5x11extras5-dev` which will later be needed for napari and  `build-essential` which is needed for e.g. scikit-image. Other additions are mainly for convenience when working with the desktop `nano`, `vim`, `mousepad` provide a selection of editors and `git` is always handy. 
 
 
 ## Modifying the base image or building on top?
