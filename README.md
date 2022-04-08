@@ -11,8 +11,11 @@ This repo contains some basic documentation on how to set up such a remote deskt
 
 # tl\;dr 
 
-TODO: pull a docker image from the hub and run it
-Show animated gif
+```
+docker run --rm -p 8888:8888 opticalflow/02a-napari-desktop:latest
+```
+
+![](./illustrations/napari-desktop.gif)
 
 # Simple Recipe to build a jupyter desktop image with napari
 
@@ -72,7 +75,7 @@ where the exact hash number of the image will be different.
 If the previous step worked, you can now run the base image
 
 ```
-docker run -p 8888:8888 01-jupyter-desktop:latest 
+docker run --rm -p 8888:8888 01-jupyter-desktop:latest 
 ```
 
 Here, we map the network port `8888` from within the image to the same port number of the host. 
@@ -157,7 +160,7 @@ Jupyter-Napari-Desktop/02a-napari-desktop$ docker build -t 02a-napari-desktop .
 Upon succesful completion, you should be able to run:
 
 ```sh 
-docker run -p 8888:8888 02a-napari-desktop:latest
+docker run --rm -p 8888:8888 02a-napari-desktop:latest
 ```
 
 And when starting the desktop you should see this:
@@ -165,18 +168,78 @@ And when starting the desktop you should see this:
 ![](./illustrations/napari-desktop.gif)
 
 
-
-
 # Add GPU support
+
+## Requirements
+
+If you have a CUDA compatible NVIDIA card, you can install nvidia-docker and also have GPU support for compute in your container.
+The only difference is that you need to run docker with the ``--gpus=all` option.
+To test whether you have the nvidia-docker runtime with CUDA support working correctly try running `nvidia-smi` inside the container.
+
+
+```sh
+Jupyter-Napari-Desktop$ docker run --gpus=all 02a-napari-desktop:latest nvidia-smi
+Fri Apr  8 09:43:06 2022       
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 470.103.01   Driver Version: 470.103.01   CUDA Version: 11.4     |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|                               |                      |               MIG M. |
+|===============================+======================+======================|
+|   0  NVIDIA GeForce ...  Off  | 00000000:01:00.0 Off |                  N/A |
+| N/A   60C    P8     3W /  N/A |   1744MiB /  3914MiB |     20%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+                                                                               
++-----------------------------------------------------------------------------+
+| Processes:                                                                  |
+|  GPU   GI   CI        PID   Type   Process name                  GPU Memory |
+|        ID   ID                                                   Usage      |
+|=============================================================================|
++-----------------------------------------------------------------------------+
+```
+If you see something similat to this, your CUDA support inside the container is working.
+However, if you don't have nvidia docker and the drivers set up correctly, you will see an error message such as `nvidia-smi` not found.
+
+## GPU Exmaple: Cellpose and Cellpose Napari Plugin
+
+As an example we modify the napari desktop slightly to also add cellpose and the cellpose GPU plugin. Cellpose training greatly benefits from 
+having a powerful GPU. As many users don't have powerful GPUs on their laptops, enabling remote desktop access to a powerful GPU workstation
+is one of the use cases for setting up a custom Jupyter Desktop.
 
 # Mount Volumes
 
+Follow the instructions for docker to mount volumes.
+In the simplest case, you can add a commandline option such as `-v local/folder/xyz:/home/jovyan/xyz` to make the folder available in the image.
+Files that are written into the folder `/home/jovyan/xyz` will then be stored on the host in the specified folder (assuming you set the permissions
+correctly) and can persist across sessions.
 
 # Build images in CI
+
+TODO Explain how to build docker images in CI rather than following these manual steps
+* kaniko on gitlab
+* Github actions?
 
 # Deploy on a server for multiple users
 
 ## Jupyterhub
 
+Single Server:
+* set up minikube (TODO)
+* install jupyterhub with helm following jupyterhub zero to hero (TODO)
+* edit config.yaml for jupyterhub helm recipe to add your desktop container (TODO)
+* user access and auth (TODO)
+* persistent volume claims
+
+Cluster:
+Talk to your IT department.
 
 ## Custom solution
+TODO
+
+# Acknowlegements
+
+This is based on the work of Yuvi Panda and the Jupyter Project.
+Using napari on binder was inspired by G. Witz.
+Some of these instructions are based on things that EMBL Bio-IT (R. Alves, J. Moscardo) and my colleague A. Eisenbarth figured out.
