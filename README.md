@@ -162,7 +162,7 @@ docker run -p 8888:8888 02a-napari-desktop:latest
 
 And when starting the desktop you should see this:
 
-[![https://user-images.githubusercontent.com/2210044/162401371-6e8ed282-2539-4ba9-bc8c-71a637470892.mov](https://user-images.githubusercontent.com/2210044/162401371-6e8ed282-2539-4ba9-bc8c-71a637470892.mov)]
+![](./illustrations/napari-desktop.gif)
 
 
 
