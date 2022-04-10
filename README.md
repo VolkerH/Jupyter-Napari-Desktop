@@ -21,7 +21,7 @@ docker run --rm -p 8888:8888 opticalflow/02a-napari-desktop:latest
 
 If you never heard about Docker and containers, it is probably a good idea to read or watch a short introductory tutorial.
 As a minimum requirement you need to install docker on your system. The basic instructions should work on Linux, Windows and Mac but the author has only tested them on Linux. In particular, shell scripts might differ a bit on windows depending on whether you use `cmd.exe`, Powershell or `bash` from WSL2. 
-If you plan on providing CUDA-based GPU acceleration for machine learning libraries (`tensorflow`, `pytorch`) or array libraries (`cupy`) make sure you install the NVIDIA-Docker runtime (NVIDIA docker is limited to Linux and not supported on Mac. It may work on windows using WSL2).
+If you plan on providing CUDA-based GPU acceleration for machine learning libraries (`tensorflow`, `pytorch`) or array libraries (`cupy`) make sure you install the NVIDIA-Docker runtime (NVIDIA docker is limited to Linux, and [WSL2 on Windows 11](https://docs.nvidia.com/cuda/wsl-user-guide/index.html). It is no supported on Mac)
 
 ## Build the base image
 
@@ -40,7 +40,7 @@ This will take a while and download several 100 MBytes so it is good to do this 
 
 You will first see how this pulls the base image layers. Ob subsequent runs this will be faster as the layers are cached.
 
-```sh
+```
 Sending build context to Docker daemon   32.2MB
 Step 1/10 : FROM jupyter/base-notebook:python-3.9.10
 python-3.9.10: Pulling from jupyter/base-notebook
@@ -170,12 +170,12 @@ And when starting the desktop you should see this:
 
 ## Requirements
 
-If you have a CUDA compatible NVIDIA card, you can install nvidia-docker and also have GPU support for compute in your container.
+If you have a CUDA compatible NVIDIA card, you can install nvidia-docker (Installation instructions for [Linux](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html), [Windows 11 with WSL2](https://docs.nvidia.com/cuda/wsl-user-guide/index.html))and also have GPU support for compute in your container.
 The only difference is that you need to run docker with the ``--gpus=all` option.
 To test whether you have the nvidia-docker runtime with CUDA support working correctly try running `nvidia-smi` inside the container.
 
 
-```sh
+```
 Jupyter-Napari-Desktop$ docker run --gpus=all 02a-napari-desktop:latest nvidia-smi
 Fri Apr  8 09:43:06 2022       
 +-----------------------------------------------------------------------------+
@@ -200,7 +200,7 @@ Fri Apr  8 09:43:06 2022
 If you see something similat to this, your CUDA support inside the container is working.
 However, if you don't have nvidia docker and the drivers set up correctly, you will see an error message such as `nvidia-smi` not found.
 
-## GPU Exmaple: Cellpose and Cellpose Napari Plugin
+## GPU Example: Cellpose and Cellpose Napari Plugin
 
 As an example we modify the napari desktop slightly to also add cellpose and the cellpose GPU plugin. Cellpose training greatly benefits from 
 having a powerful GPU. As many users don't have powerful GPUs on their laptops, enabling remote desktop access to a powerful GPU workstation
@@ -242,7 +242,9 @@ Single Server:
 * persistent volume claims
 
 Cluster:
-Talk to your IT department.
+If you run a Kubernetes cluster rather than a `minikube` on  a single server, there are
+many options around storage, authentication and networking that will have to be customized to your
+installation. If this is in an instittutional setting you best talk to your IT department.
 
 ## Custom solution
 TODO
