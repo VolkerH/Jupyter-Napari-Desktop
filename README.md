@@ -252,5 +252,5 @@ TODO
 # Acknowlegements
 
 This is based on the work of Yuvi Panda and the Jupyter Project.
-Using napari on binder was inspired by G. Witz.
-Some of these instructions are based on things that EMBL Bio-IT (R. Alves, J. Moscardo) and my colleague A. Eisenbarth figured out.
+Using napari on binder was inspired by [G. Witz](https://github.com/guiwitz).
+Some of these instructions are based on things that EMBL Bio-IT (R. Alves, [J. Moscardo](https://github.com/titansmc)) and my colleague A. Eisenbarth figured out.
