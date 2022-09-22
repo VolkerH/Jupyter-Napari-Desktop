@@ -171,7 +171,7 @@ And when starting the desktop you should see this:
 ## Requirements
 
 If you have a CUDA compatible NVIDIA card, you can install nvidia-docker (Installation instructions for [Linux](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html), [Windows 11 with WSL2](https://docs.nvidia.com/cuda/wsl-user-guide/index.html))and also have GPU support for compute in your container.
-The only difference is that you need to run docker with the ``--gpus=all` option.
+The only difference is that you need to run docker with the `--gpus=all` option.
 To test whether you have the nvidia-docker runtime with CUDA support working correctly try running `nvidia-smi` inside the container.
 
 
