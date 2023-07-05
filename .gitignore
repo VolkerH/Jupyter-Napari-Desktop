@@ -10,11 +10,11 @@ __pycache__/
 .Python
 build/
 develop-eggs/
-dist/
+# dist/ # needed by noVNC
 downloads/
 eggs/
 .eggs/
-lib/
+# lib/ # needed by noVNC
 lib64/
 parts/
 sdist/
@@ -53,7 +53,7 @@ coverage.xml
 
 # Translations
 *.mo
-*.pot
+#*.pot # noVNC contains .pot files
 
 # Django stuff:
 *.log
